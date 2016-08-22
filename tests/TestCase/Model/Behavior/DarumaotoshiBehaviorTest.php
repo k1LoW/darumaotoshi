@@ -124,4 +124,18 @@ class DarumaotoshiBehaviorTest extends TestCase
         $this->assertTrue($result);        
         $this->assertCount(3, $this->Trash->find('all')->toArray());
     }
+
+    /**
+     * testRestore
+     *
+     */
+    public function testRestore(){
+        $post = $this->Posts->get(1);
+        $result = $this->Posts->delete($post);
+        $this->assertTrue($result);
+        $result = $this->Posts->restore(1);
+        $this->assertTrue($result);
+        $this->assertCount(3, $this->Posts->find('all')->toArray());
+        $this->assertCount(0, $this->Trash->find('all')->toArray());
+    }
 }

@@ -34,22 +34,46 @@ class DarumaotoshiBehavior extends Behavior
     }
 
     /**
+     * restore
+     *
+     */
+    public function restore($id){
+        $table = $this->_table;
+        $trashed = $this->TrashTable->find()
+               ->where([
+                   'table_id' => $id,
+                   'table_name' => $table->table(),
+               ])
+               ->first();
+        if (empty($trashed)) {
+            throw new RuntimeException();
+        }
+        $entity = $table->newEntity(
+            json_decode($trashed->data, true)
+        );
+        $result = $table->save($entity, ['validate' => false, 'checkRules' => false]);
+        if (!$result) {
+            return false;
+        }
+        return $this->TrashTable->delete($trashed);
+    }
+
+    /**
      * slide
      *
      */
-    public function slide(EntityInterface $entity){
-        $source = $entity->source();
-        $table = TableRegistry::get($source);
-        $tableName = $table->table();
-        foreach ($this->_table->associations() as $association) {
-            if ($this->shouldBeCascadeDelete($association, $this->_table)) {
+    protected function slide(EntityInterface $entity)
+    {
+        $table = $this->_table;
+        foreach ($table->associations() as $association) {
+            if ($this->shouldBeCascadeDelete($association, $table)) {
                 $association->cascadeDelete($entity, ['_primary' => false]);
             }
         }
-
         $trash = $this->TrashTable->newEntity([
-            'source' => $source,
-            'table_name' => $tableName,
+            'source' => $entity->source(),
+            'table_id' => $entity->{$table->primaryKey()},
+            'table_name' => $table->table(),
         ]);
 
         $data = [];
@@ -66,7 +90,7 @@ class DarumaotoshiBehavior extends Behavior
     /**
      * see https://github.com/UseMuffin/Trash/blob/master/src/Model/Behavior/TrashBehavior.php#L323
      */
-    private function shouldBeCascadeDelete(Association $association, Table $table)
+    protected function shouldBeCascadeDelete(Association $association, Table $table)
     {
         if ($association->target()->hasBehavior('Darumaotoshi')
             && $association->isOwningSide($table)
