@@ -1,0 +1,30 @@
+{
+    "name": "k1low/darumaotoshi",
+    "description": "Darumaotoshi: Slide delete plugin for CakePHP 3",
+    "type": "cakephp-plugin",
+    "keywords": [
+        "cakephp",
+        "cakephp3",
+        "delete"
+    ],
+    "homepage": "https://github.com/k1low/darumaotoshi",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "friendsofcake/cakephp-test-utilities": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Darumaotoshi\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Darumaotoshi\\Test\\": "tests"
+        }
+    }
+}
