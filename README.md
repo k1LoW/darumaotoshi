@@ -37,9 +37,7 @@ If you'd like to have related records marked as trashed when deleting a parent i
 
 ### [UseMuffin/Trash](https://github.com/UseMuffin/Trash)
 
-```
 Copyright (c) 2015, [Use Muffin][muffin] and licensed under [The MIT License][mit].
-```
 
 [cakephp]:http://cakephp.org
 [composer]:http://getcomposer.org
