@@ -30,6 +30,7 @@ class DarumaotoshiBehavior extends Behavior
         if (!$this->slide($entity)) {
             throw new RuntimeException();
         }
+
         return true;
     }
 
@@ -37,14 +38,15 @@ class DarumaotoshiBehavior extends Behavior
      * restore
      *
      */
-    public function restore($id){
+    public function restore($id)
+    {
         $table = $this->_table;
         $trashed = $this->TrashTable->find()
-               ->where([
-                   'table_id' => $id,
-                   'table_name' => $table->table(),
-               ])
-               ->first();
+                 ->where([
+                     'table_id' => $id,
+                     'table_name' => $table->table(),
+                 ])
+                 ->first();
         if (empty($trashed)) {
             throw new RuntimeException();
         }
@@ -55,6 +57,7 @@ class DarumaotoshiBehavior extends Behavior
         if (!$result) {
             return false;
         }
+
         return $this->TrashTable->delete($trashed);
     }
 
@@ -81,9 +84,10 @@ class DarumaotoshiBehavior extends Behavior
         foreach ($columns as $col) {
             $data[$col] = $entity->{$col};
         }
-        $trash->set('data',json_encode($data));
+        $trash->set('data', json_encode($data));
 
         $result = $this->TrashTable->save($trash);
+
         return $result;
     }
 
@@ -98,6 +102,7 @@ class DarumaotoshiBehavior extends Behavior
             && $association->cascadeCallbacks()) {
             return true;
         }
+
         return false;
     }
 }
