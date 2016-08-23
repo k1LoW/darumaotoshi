@@ -12,12 +12,24 @@ use RuntimeException;
 
 class DarumaotoshiBehavior extends Behavior
 {
+
+    /**
+     * __construct
+     *
+     * @param \Cake\ORM\Table $table table
+     * @param array $config config
+     */
     public function __construct(Table $table, array $config = [])
     {
         parent::__construct($table, $config);
         $this->TrashTable = TableRegistry::get('Darumaotoshi.Trash');
     }
 
+    /**
+     * implementedEvents
+     *
+     * @return array
+     */
     public function implementedEvents()
     {
         return [
@@ -25,6 +37,14 @@ class DarumaotoshiBehavior extends Behavior
         ];
     }
 
+    /**
+     * beforeDelete
+     *
+     * @param \Cake\Event\Event $event event
+     * @param \Cake\Datasource\EntityInterface $entity entity
+     * @param \ArrayObject $options options
+     * @return bool
+     */
     public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options)
     {
         if (!$this->slide($entity)) {
@@ -37,6 +57,8 @@ class DarumaotoshiBehavior extends Behavior
     /**
      * restore
      *
+     * @param mixed $id primaryKey
+     * @return bool
      */
     public function restore($id)
     {
@@ -64,6 +86,8 @@ class DarumaotoshiBehavior extends Behavior
     /**
      * slide
      *
+     * @param Cake\Datasource\EntityInterface $entity entity
+     * @return bool
      */
     protected function slide(EntityInterface $entity)
     {
@@ -93,6 +117,10 @@ class DarumaotoshiBehavior extends Behavior
 
     /**
      * see https://github.com/UseMuffin/Trash/blob/master/src/Model/Behavior/TrashBehavior.php#L323
+     *
+     * @param \Association $association association
+     * @param \Cake\ORM\Table $table table
+     * @return bool
      */
     protected function shouldBeCascadeDelete(Association $association, Table $table)
     {
