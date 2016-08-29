@@ -95,22 +95,23 @@ class DarumaotoshiBehavior extends Behavior
         $result = $this->restore($id);
 
         foreach ($table->associations() as $association) {
-            if ($this->shouldCascade($association, $table)) {
-                $trashed = $this->TrashTable->find()
-                         ->where([
-                             'source' => $association->target()->registryAlias(),
-                             'table_name' => $association->table(),
-                         ])
-                         ->andWhere(function ($exp, $q) use ($id, $association) {
-                             $like = '"' . $association->foreignKey() . '":' . $id . ',';
+            if (!$this->shouldCascade($association, $table)) {
+                continue;
+            }
+            $trashed = $this->TrashTable->find()
+                     ->where([
+                         'source' => $association->target()->registryAlias(),
+                         'table_name' => $association->table(),
+                     ])
+                     ->andWhere(function ($exp, $q) use ($id, $association) {
+                         $like = '"' . $association->foreignKey() . '":' . $id . ',';
 
-                             return $exp->like('data', '%' . $like . '%');
-                         })
-                         ->all();
-                foreach ($trashed as $t) {
-                    if (!$association->target()->cascadingRestore($t->table_id)) {
-                        return false;
-                    }
+                         return $exp->like('data', '%' . $like . '%');
+                     })
+                     ->all();
+            foreach ($trashed as $t) {
+                if (!$association->target()->cascadingRestore($t->table_id)) {
+                    return false;
                 }
             }
         }
