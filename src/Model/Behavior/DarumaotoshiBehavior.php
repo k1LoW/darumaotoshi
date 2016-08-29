@@ -98,7 +98,7 @@ class DarumaotoshiBehavior extends Behavior
             if ($this->shouldCascade($association, $table)) {
                 $trashed = $this->TrashTable->find()
                          ->where([
-                             'source' => $association->className(),
+                             'source' => $association->target()->registryAlias(),
                              'table_name' => $association->table(),
                          ])
                          ->andWhere(function ($exp, $q) use ($id, $association) {
