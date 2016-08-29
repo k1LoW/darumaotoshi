@@ -2,7 +2,7 @@
 
 [だるま落とし](https://www.google.co.jp/search?q=だるま落とし&safe=off&source=lnms&tbm=isch)
 
-Slide delete (export delete) plugin for CakePHP 3
+"Archive and delete" (slide delete) plugin for CakePHP 3
 
 ## Installation
 

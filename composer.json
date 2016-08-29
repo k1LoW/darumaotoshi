@@ -1,6 +1,6 @@
 {
     "name": "k1low/darumaotoshi",
-    "description": "Darumaotoshi: Slide delete plugin for CakePHP 3",
+    "description": "\"Archive and delete\" (slide delete) plugin for CakePHP 3",
     "type": "cakephp-plugin",
     "keywords": [
         "cakephp",
