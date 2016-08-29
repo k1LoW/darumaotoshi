@@ -141,4 +141,74 @@ class DarumaotoshiBehaviorTest extends TestCase
         $this->assertCount(3, $this->Posts->find('all')->toArray());
         $this->assertCount(0, $this->Trash->find('all')->toArray());
     }
+
+    /**
+     * testCascadingRestore
+     *
+     */
+    public function testCascadingRestore()
+    {
+        $this->Categories->hasMany('Posts', [
+            'className' => 'Darumaotoshi.Posts',
+            'foreignKey' => 'category_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+        $this->Posts->hasMany('Comments', [
+            'className' => 'Darumaotoshi.Comments',
+            'foreignKey' => 'post_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+        $categoryId = 1;
+
+        $category = $this->Categories->get($categoryId);
+        $result = $this->Categories->delete($category);
+        $this->assertTrue($result);
+        $result = $this->Trash->find('all')->toArray();
+        $this->assertCount(3, $result);
+
+        $this->assertEquals('Darumaotoshi.Posts', $result[0]->source);
+        $this->assertEquals('Darumaotoshi.Posts', $result[1]->source);
+        $this->assertEquals('Darumaotoshi.Categories', $result[2]->source);
+
+        $result = $this->Categories->cascadingRestore($categoryId);
+        $this->assertTrue($result);
+        $this->assertCount(0, $this->Trash->find('all')->toArray());
+    }
+
+    /**
+     * testCascadingRestore2
+     *
+     */
+    public function testCascadingRestore2()
+    {
+        $this->Categories->hasMany('Posts', [
+            'className' => 'Darumaotoshi.Posts',
+            'foreignKey' => 'category_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+        $this->Posts->hasMany('Comments', [
+            'className' => 'Darumaotoshi.Comments',
+            'foreignKey' => 'post_id',
+            'dependent' => true,
+            'cascadeCallbacks' => true,
+        ]);
+        $categoryId = 2;
+
+        $category = $this->Categories->get($categoryId);
+        $result = $this->Categories->delete($category);
+        $this->assertTrue($result);
+        $result = $this->Trash->find('all')->toArray();
+        $this->assertCount(3, $result);
+
+        $this->assertEquals('Darumaotoshi.Comments', $result[0]->source);
+        $this->assertEquals('Darumaotoshi.Posts', $result[1]->source);
+        $this->assertEquals('Darumaotoshi.Categories', $result[2]->source);
+
+        $result = $this->Categories->cascadingRestore($categoryId);
+        $this->assertTrue($result);
+        $this->assertCount(0, $this->Trash->find('all')->toArray());
+    }
 }
