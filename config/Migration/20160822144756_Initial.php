@@ -16,6 +16,11 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
+            ->addColumn('table_id', 'text', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addColumn('data', 'text', [
                 'default' => null,
                 'limit' => null,
