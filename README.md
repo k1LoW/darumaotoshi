@@ -1,4 +1,4 @@
-# Darumaotoshi
+# Darumaotoshi [![Build Status](https://travis-ci.org/k1LoW/darumaotoshi.svg?branch=master)](https://travis-ci.org/k1LoW/darumaotoshi)
 
 [だるま落とし](https://www.google.co.jp/search?q=だるま落とし&safe=off&source=lnms&tbm=isch)
 
