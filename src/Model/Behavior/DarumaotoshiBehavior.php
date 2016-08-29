@@ -84,6 +84,41 @@ class DarumaotoshiBehavior extends Behavior
     }
 
     /**
+     * cascadingRestore
+     *
+     * @param mixed $id primaryKey
+     * @return bool
+     */
+    public function cascadingRestore($id)
+    {
+        $table = $this->_table;
+        $result = $this->restore($id);
+
+        foreach ($table->associations() as $association) {
+            if ($this->shouldCascade($association, $table)) {
+                $trashed = $this->TrashTable->find()
+                         ->where([
+                             'source' => $association->className(),
+                             'table_name' => $association->table(),
+                         ])
+                         ->andWhere(function ($exp, $q) use ($id, $association) {
+                             $like = '"' . $association->foreignKey() . '":' . $id . ',';
+
+                             return $exp->like('data', '%' . $like . '%');
+                         })
+                         ->all();
+                foreach ($trashed as $t) {
+                    if (!$association->target()->cascadingRestore($t->table_id)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * slide
      *
      * @param Cake\Datasource\EntityInterface $entity entity
@@ -93,7 +128,7 @@ class DarumaotoshiBehavior extends Behavior
     {
         $table = $this->_table;
         foreach ($table->associations() as $association) {
-            if ($this->shouldBeCascadeDelete($association, $table)) {
+            if ($this->shouldCascade($association, $table)) {
                 $association->cascadeDelete($entity, ['_primary' => false]);
             }
         }
@@ -122,7 +157,7 @@ class DarumaotoshiBehavior extends Behavior
      * @param \Cake\ORM\Table $table table
      * @return bool
      */
-    protected function shouldBeCascadeDelete(Association $association, Table $table)
+    protected function shouldCascade(Association $association, Table $table)
     {
         if ($association->target()->hasBehavior('Darumaotoshi')
             && $association->isOwningSide($table)
